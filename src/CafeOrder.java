@@ -1,74 +1,73 @@
 import java.util.ArrayList;
-import java.util.List;
+
+// БЕЗ SOLID
 
 public class CafeOrder {
 
-    private static final String[] MENU_NAMES = {"Кава", "Чай", "Круасан", "Тістечко"};
-    private static final double[] MENU_PRICES = {45.0, 30.0, 55.0, 70.0};
+    String[] menuNames  = {"Кава", "Чай", "Круасан", "Тістечко"};
+    double[] menuPrices = { 45.0, 30.0, 55.0, 70.0 };
 
-    private List<String> orderedItems = new ArrayList<>();
-    private List<Integer> orderedQtys = new ArrayList<>();
-    private List<Double> orderedPrices = new ArrayList<>();
+    
+    ArrayList<String>  names  = new ArrayList<String>();
+    ArrayList<Integer> counts = new ArrayList<Integer>();
+    ArrayList<Double>  prices = new ArrayList<Double>();
 
-
-    private String discountType;
+    String discountType;
 
     public CafeOrder(String discountType) {
         this.discountType = discountType;
     }
 
 
-    public void addItem(String itemName, int qty) {
-        for (int i = 0; i < MENU_NAMES.length; i++) {
-            if (MENU_NAMES[i].equalsIgnoreCase(itemName)) {
-                orderedItems.add(itemName);
-                orderedQtys.add(qty);
-                orderedPrices.add(MENU_PRICES[i]);
-                System.out.println("Додано: " + itemName + " x" + qty);
+    public void addItem(String name, int count) {
+        for (int i = 0; i < menuNames.length; i++) {
+            if (menuNames[i].equals(name)) {
+                names.add(name);
+                counts.add(count);
+                prices.add(menuPrices[i]);
+                System.out.println("Додано: " + name + " x" + count);
                 return;
             }
         }
-        System.out.println("Страву не знайдено в меню: " + itemName);
+        System.out.println("Такої страви немає в меню: " + name);
     }
 
 
-    public double calculateTotal() {
+    public double getTotal() {
         double total = 0;
-        for (int i = 0; i < orderedItems.size(); i++) {
-            total += orderedPrices.get(i) * orderedQtys.get(i);
+        for (int i = 0; i < names.size(); i++) {
+            total = total + prices.get(i) * counts.get(i);
         }
         return total;
     }
 
-
     public double applyDiscount(double total) {
-        if ("volume".equals(discountType)) {
+        if (discountType.equals("volume")) {
             if (total > 200) {
-                System.out.println("Застосовано знижку на обсяг: -10%");
+                System.out.println("Знижка на обсяг: -10%");
                 return total * 0.90;
             }
-        } else if ("holiday".equals(discountType)) {
-            System.out.println("Застосовано святкову знижку: -15%");
+        } else if (discountType.equals("holiday")) {
+            System.out.println("Святкова знижка: -15%");
             return total * 0.85;
         }
         return total;
     }
 
     public void printReceipt() {
-        System.out.println("\n========== ЧЕК ==========");
+        System.out.println("========== ЧЕК ==========");
         System.out.println("Кафе 'Затишок'");
         System.out.println("-------------------------");
-        for (int i = 0; i < orderedItems.size(); i++) {
-            double lineTotal = orderedPrices.get(i) * orderedQtys.get(i);
-            System.out.printf("%-10s x%d = %.2f грн%n",
-                    orderedItems.get(i), orderedQtys.get(i), lineTotal);
+
+        for (int i = 0; i < names.size(); i++) {
+            double lineTotal = prices.get(i) * counts.get(i);
+            System.out.println(names.get(i) + " x" + counts.get(i) + " = " + lineTotal + " грн");
         }
+
         System.out.println("-------------------------");
-        double subtotal = calculateTotal();
+        double subtotal = getTotal();
         double total = applyDiscount(subtotal);
-        System.out.printf("Разом:       %.2f грн%n", total);
-        System.out.println("=========================\n");
+        System.out.println("До сплати: " + total + " грн");
+        System.out.println("=========================");
     }
-
-
 }
